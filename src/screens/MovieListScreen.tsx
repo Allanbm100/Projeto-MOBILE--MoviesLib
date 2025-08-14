@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Button } from "react-native"
 
 export default function MovieListScreen() {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
     return (
         <View style={styles.container}>
