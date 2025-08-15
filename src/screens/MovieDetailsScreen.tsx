@@ -11,6 +11,5 @@ export default function MovieDetailsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
     },
 })

@@ -5,8 +5,6 @@ import MovieListScreen from "../screens/MovieListScreen";
 import MapScreen from "../screens/MapScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
-{/* <MaterialIcons name="movie" size={24} color="black" />? */}
-
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs()  {
@@ -34,7 +32,7 @@ export default function MainTabs()  {
                 return <MaterialIcons name={iconName} size={size} color={color} />;
             }
         })}>
-            <Tab.Screen name="MovieListScreen" component={MovieListScreen} options={{ title: "Filmes" }} />
+            <Tab.Screen name="MovieListScreen" component={MovieListScreen} options={{ title: "Filmes", headerShown: false }} />
             <Tab.Screen name="MapScreen" component={MapScreen} options={{ title: "Mapa" }} />
             <Tab.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: "Ajustes" }} />
         </Tab.Navigator>
