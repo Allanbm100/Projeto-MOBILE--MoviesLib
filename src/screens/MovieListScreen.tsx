@@ -1,8 +1,7 @@
 import { useNavigation } from "@react-navigation/native"
-import { View, StyleSheet, Text, Button, FlatList, TouchableOpacity } from "react-native"
+import { View, StyleSheet, Text, FlatList, TouchableOpacity } from "react-native"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import MovieRow from "../components/MovieRow";
-
 import movies from "../data/movies.json"
 
 export default function MovieListScreen() {
@@ -22,7 +21,7 @@ export default function MovieListScreen() {
                     data={movies}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => navigation.navigate("MovieDetailsScreen", { movieId: item.id })}>
+                        <TouchableOpacity onPress={() => navigation.navigate("MovieDetailsScreen", { movie: item })}>
                             <MovieRow movie={item} />
                         </TouchableOpacity>
                     )}

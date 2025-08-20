@@ -1,5 +1,4 @@
 import { Button, StyleSheet } from 'react-native';
-
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabs from './src/components/MainTabs';

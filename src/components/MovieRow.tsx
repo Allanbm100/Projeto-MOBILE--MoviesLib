@@ -7,7 +7,7 @@ export type Movie = {
     duration: string;
     rating: number;
     synopsis: string;
-    image: string;
+    poster: string;
 }
 
 export default function MovieRow({ movie }: { movie: Movie }) {
