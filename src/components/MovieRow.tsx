@@ -13,7 +13,7 @@ export type Movie = {
 export default function MovieRow({ movie }: { movie: Movie }) {
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/matrix.png')} style={styles.image} />
+            <Image source={{ uri: movie.poster }} style={styles.image} />
             <Text style={styles.title}>{movie.title}</Text>
             <Text style={styles.rating}>{`${movie.rating}/10`}</Text>
         </View>
