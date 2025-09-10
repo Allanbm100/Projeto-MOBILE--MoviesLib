@@ -14,8 +14,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer
         theme={{
-          ...DefaultTheme,
-          colors: { ...DefaultTheme.colors, background: '#fff', primary: '#EB4435' },
+          ...DefaultTheme, colors: { ...DefaultTheme.colors, background: '#fff', primary: '#EB4435' },
         }}
       >
         <Stack.Navigator>
@@ -23,7 +22,11 @@ export default function App() {
           <Stack.Screen name='MovieDetailsScreen' component={MovieDetailsScreen} options={({ navigation, route }) => ({
             headerBackButtonDisplayMode: 'minimal',
             headerRight: () => (
-              <TouchableOpacity onPress={() => navigation.navigate('MovieFormScreen', { movie: route.params?.movie })}>
+              <TouchableOpacity onPress={() => navigation.navigate('MovieFormScreen', { 
+                movie: route.params?.movie, 
+                onSave: (updatedMovie) => {
+                  navigation.setParams({ movie: updatedMovie })
+                }  })}>
                 <Text style={{ color: "#EB4435", fontSize: 18 }}>Editar</Text>
               </TouchableOpacity>
             ),

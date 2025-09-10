@@ -1,15 +1,33 @@
-import { View, StyleSheet, Text, Image, ScrollView } from "react-native"
+import { View, StyleSheet, Text, Image, ScrollView, Alert } from "react-native"
 import PlayButton from "../components/PlayButton"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { useRoute } from "@react-navigation/native" 
 import { LinearGradient } from "expo-linear-gradient"
 import type { Movie } from "../components/MovieRow"
+import React, { useState } from "react"
+import { Video, ResizeMode } from 'expo-av'
+import { getTrailerUrl } from "../services/movieService"
+
+
 
 export default function MovieDetailsScreen() {
 
     const route = useRoute();
     const { movie } = route.params as { movie: Movie }
+    const [showVideo, setShowVideo] = useState(false) // Quando true, exibe o trailer
+    const [trailer, setTrailer] = useState("")
+
+    const showTrailer = async () => {
+        try {
+            const trailerUrl = await getTrailerUrl(movie.title)
+            console.log("Trailer do filme: ", trailerUrl)
+            setTrailer(trailerUrl)
+            setShowVideo(true)
+        } catch (error) {
+            Alert.alert("Ops!", "Trailer não encontrado!")
+        }
+    }
 
     return (
         <SafeAreaProvider>
@@ -22,6 +40,18 @@ export default function MovieDetailsScreen() {
                         start={{ x:0, y:0.5 }} 
                         end={{ x:0, y:1 }}
                     />
+
+                    { showVideo && (
+                        <Video
+                            source={ {uri: trailer} } // Origem do vídeo
+                            rate={ 1.0 } // Velocidade
+                            volume={ 1.0 } // Volume
+                            resizeMode={ResizeMode.CONTAIN}
+                            shouldPlay
+                            useNativeControls
+                            style={ [styles.gradient, { backgroundColor: 'black' }] }
+                        />
+                    )}
                 </View>
                 <View style={styles.content}>
                     <Text style={{ fontSize: 32, fontWeight: "bold", marginVertical: 12 }}>
@@ -35,7 +65,7 @@ export default function MovieDetailsScreen() {
 
                     <Text style={[styles.text, { marginBottom: 12 }]}>{ movie.categories }</Text>
 
-                    <PlayButton />
+                    <PlayButton onPress={() => showTrailer()} />
 
                     <ScrollView style={styles.synopsisContainer} contentContainerStyle={styles.synopsisContent}>
                         <Text style={[styles.text, { marginBottom: 12, fontSize: 18, fontWeight: "600" }]}>

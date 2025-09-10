@@ -1,10 +1,10 @@
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
-import { View, StyleSheet, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Pressable } from "react-native"
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Pressable } from "react-native"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { SwipeListView } from "react-native-swipe-list-view";
-import { use, useCallback } from "react";
+import { useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMovies } from "../services/movieService";
+import { deleteMovie, getMovies } from "../services/movieService";
 import MovieRow, { Movie } from "../components/MovieRow";
 // import movies from "../data/movies.json"
 
