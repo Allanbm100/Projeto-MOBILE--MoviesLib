@@ -1,15 +1,20 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import { APP_COLORS } from '../colors/Colors'
+import { AppContext } from '../../App'
+import React from 'react'
 
 type Props = {
     onPress: () => void
 }
 
 export default function PlayButton({ onPress }: Props) {
+    const { value } = React.useContext(AppContext);
+
     return (
         <TouchableOpacity onPress={ onPress} style={styles.container}>
             <View style={styles.playButton}>
-                <FontAwesome6 name="play" size={18} color="#EB4435" />
+                <FontAwesome6 name="play" size={18} color={APP_COLORS[Number(value)]} />
             </View>
             <Text style={styles.text}>Trailer</Text>
         </TouchableOpacity>

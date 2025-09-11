@@ -4,13 +4,19 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MovieListScreen from "../screens/MovieListScreen";
 import MapScreen from "../screens/MapScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import { APP_COLORS } from "../colors/Colors";
+import { AppContext } from "../../App";
+import React from "react";
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs()  {
+
+    const { value } = React.useContext(AppContext);
+
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
-            tabBarActiveTintColor: '#EB4435',
+            tabBarActiveTintColor: APP_COLORS[Number(value)],
             tabBarInactiveTintColor: '#999',
             tabBarLabelStyle: { fontSize: 12 },
             tabBarIcon: ({ color, size }) => {
@@ -34,7 +40,7 @@ export default function MainTabs()  {
         })}>
             <Tab.Screen name="MovieListScreen" component={MovieListScreen} options={{ title: "Filmes", headerShown: false }} />
             <Tab.Screen name="MapScreen" component={MapScreen} options={{ title: "Mapa" }} />
-            <Tab.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: "Ajustes" }} />
+            <Tab.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: "Ajustes", headerShown: false }} />
         </Tab.Navigator>
     )
 }

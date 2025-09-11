@@ -4,11 +4,18 @@ import { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, Text, TextInput, Switch } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { s, vs } from "react-native-size-matters";
+import { AppContext } from "../../App";
+import { APP_COLORS } from "../colors/Colors";
 
 export default function SettingsScreen() {
   const [theme, setTheme] = useState<number | null>(null);
   const [autoPlay, setAutoPlay] = useState<boolean | null>(null);
   const [category, setCategory] = useState<string | null>(null);
+  const { value, setValue } = useContext(AppContext);
+
+  if (!setValue) {
+    throw new Error("AppContext não encontrado");
+  }
 
   const loadData = async () => {
     try {
@@ -31,6 +38,7 @@ export default function SettingsScreen() {
   useEffect(() => {
     if (theme != null) {
       AsyncStorage.setItem("theme", String(theme));
+      setValue(String(theme));
     }
   }, [theme]);
 
@@ -66,7 +74,7 @@ export default function SettingsScreen() {
           <Switch
             value={autoPlay}
             onValueChange={setAutoPlay}
-            trackColor={{ false: "#bbb", true: "#eb4435" }}
+            trackColor={{ false: "#bbb", true: APP_COLORS[Number(value)] }}
             thumbColor={"white"}
             ios_backgroundColor={"#bbb"}
           />

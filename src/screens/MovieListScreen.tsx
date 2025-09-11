@@ -2,24 +2,48 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Pressable } from "react-native"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { SwipeListView } from "react-native-swipe-list-view";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteMovie, getMovies } from "../services/movieService";
 import MovieRow, { Movie } from "../components/MovieRow";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { APP_COLORS } from "../colors/Colors";
+import { AppContext } from "../../App";
+import React from "react";
 // import movies from "../data/movies.json"
 
 export default function MovieListScreen() {
     const navigation = useNavigation<any>();
     const queryClient = useQueryClient();
+    const [category, setCategory] = useState("");
+    const { value } = React.useContext(AppContext);
 
     const { data: movies, isLoading, isError, refetch, isFetching } = useQuery({
         queryKey: ['movies'],
         queryFn: getMovies,
-        select: (data) => data.sort((a: Movie, b: Movie) => a.title.localeCompare(b.title)),
+        select: (data) => data.sort((a: Movie, b: Movie) => {
+            if (category != "" && category != null) {
+                const aHasCategory = a.categories.includes(category)
+                const bHasCategory = b.categories.includes(category)
+                if (aHasCategory && !bHasCategory) return -1
+                if (!aHasCategory && bHasCategory) return 1
+            }
+            return a.title.localeCompare(b.title)
+        }), 
     });
+
+    const loadData = async () => {
+        try {
+            const storedCategory = await AsyncStorage.getItem("category")
+            setCategory(storedCategory ?? "")
+        } catch (error) {
+            console.log("Erro ao carregar os ajustes: ", error);
+        }
+    }
 
     useFocusEffect(
         useCallback(() => {
+            loadData()
             queryClient.invalidateQueries({ queryKey: ['movies'] });
         }, [queryClient])
     )
@@ -55,7 +79,7 @@ export default function MovieListScreen() {
     if (isLoading) {
         return (
             <View style={styles.center}>
-                <ActivityIndicator size="large" color="#EB4435" />
+                <ActivityIndicator size="large" color={ APP_COLORS[Number(value)] } />
             </View>
         )
     }
@@ -74,7 +98,7 @@ export default function MovieListScreen() {
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={styles.title}>Filmes</Text>
                     <TouchableOpacity onPress={() => navigation.navigate("MovieFormScreen")}>
-                        <Text style={{ color: "#EB4435", fontSize: 32, fontWeight: "black", marginRight: 10 }}>+</Text>
+                        <Text style={{ color: APP_COLORS[Number(value)], fontSize: 32, fontWeight: "black", marginRight: 10 }}>+</Text>
                     </TouchableOpacity>
                 </View>
                 <SwipeListView

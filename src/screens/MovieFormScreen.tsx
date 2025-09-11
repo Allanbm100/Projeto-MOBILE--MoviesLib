@@ -5,6 +5,8 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 {/** s = scale, vs = verticalScale */}
 import { useRoute, useNavigation } from "@react-navigation/native"
 import { addMovie, updateMovie } from '../services/movieService'
+import { APP_COLORS } from '../colors/Colors'
+import { AppContext } from '../../App'
 
 export default function MovieFormScreen() {
 
@@ -17,6 +19,7 @@ export default function MovieFormScreen() {
 
     const route = useRoute();
     const navigation = useNavigation<any>();
+    const { value } = React.useContext(AppContext);
 
     const movie = (route.params as any)?.movie ?? null;
     const onSave = route.params?.onSave;
@@ -148,7 +151,7 @@ export default function MovieFormScreen() {
                     />
                 </ScrollView>
                 <View style={styles.buttonArea}>
-                    <TouchableOpacity onPress={() => {}} style={styles.button}>
+                    <TouchableOpacity onPress={() => {}} style={[styles.button, { backgroundColor: APP_COLORS[Number(value)] }]}>
                         <Text style={{ color: 'white', fontSize: s(18) }}>
                             { movie == null ? "Cadastrar filme" : "Salvar alterações" }
                         </Text>
@@ -185,7 +188,6 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        backgroundColor: "#EB4435",
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 8,

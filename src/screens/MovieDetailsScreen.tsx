@@ -5,9 +5,10 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 import { useRoute } from "@react-navigation/native" 
 import { LinearGradient } from "expo-linear-gradient"
 import type { Movie } from "../components/MovieRow"
-import React, { useState } from "react"
+import React, { useState, useEffect, use } from "react"
 import { Video, ResizeMode } from 'expo-av'
 import { getTrailerUrl } from "../services/movieService"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 
@@ -28,6 +29,21 @@ export default function MovieDetailsScreen() {
             Alert.alert("Ops!", "Trailer não encontrado!")
         }
     }
+
+    const loadData = async () => {
+        try {
+            const storedAutoPlay = await AsyncStorage.getItem("autoPlay")
+            if (storedAutoPlay === "true") {
+                showTrailer()
+            }
+        } catch (error) {
+            console.log("Erro ao carregar os ajustes: ", error);
+        }
+    }
+
+    useEffect(() => {
+        loadData()
+    }, [])
 
     return (
         <SafeAreaProvider>

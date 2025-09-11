@@ -1,0 +1,1 @@
+export const APP_COLORS = ["#eb4435", "#007aff", "#fdd225"]
