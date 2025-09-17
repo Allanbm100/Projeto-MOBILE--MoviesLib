@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import React, { useEffect, useRef, useState } from "react"
 import { View, StyleSheet, Text, ActivityIndicator, TextInput, Keyboard, TouchableOpacity } from "react-native"
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
@@ -16,7 +18,8 @@ const MapScreen = () => {
     const [selectedPoi, setSelectedPoi] = useState<any>(null)
     const mapRef = useRef<MapView>(null)
     const { value } = React.useContext(AppContext);
-
+    const { t } = useTranslation()
+    
     useEffect(() => {
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync()
@@ -48,7 +51,7 @@ const MapScreen = () => {
         return (
             <View style={styles.center}>
                 <ActivityIndicator size='large' color={APP_COLORS[Number(value)]} />
-                <Text>Carregando localização...</Text>
+                <Text>{t("loadingLocation")}</Text>
             </View>
         )
     }
@@ -56,7 +59,7 @@ const MapScreen = () => {
     if (!location) {
         return (
             <View style={styles.center}>
-                <Text>Não foi possível obter a sua localização</Text>
+                <Text>{t("locationNone")}</Text>
             </View>
         )
     }
@@ -68,14 +71,14 @@ const MapScreen = () => {
                 <View style={styles.searchContainer}>
                     <TextInput
                         style={styles.input}
-                        placeholder="Digite o que deseja buscar (ex: cinema, restaurante...)"
+                        placeholder={t("searchPlaceholder")}
                         value={query}
                         onChangeText={setQuery}
                         onSubmitEditing={searchPOIsHandler}
                         returnKeyType='search'
                     />
                     <TouchableOpacity onPress={searchPOIsHandler}>
-                        <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>Pesquisar</Text>
+                        <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>{t("search")}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -97,7 +100,7 @@ const MapScreen = () => {
                             latitude: location.latitude,
                             longitude: location.longitude,
                         }}
-                        title="Você está aqui"
+                        title={t("youreHere")}
                         pinColor={APP_COLORS[Number(value)]}
                     />
 

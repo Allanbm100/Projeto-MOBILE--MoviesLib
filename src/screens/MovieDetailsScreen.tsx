@@ -1,16 +1,17 @@
-import { View, StyleSheet, Text, Image, ScrollView, Alert } from "react-native"
+import { useTranslation } from "react-i18next";
+
+import { View, StyleSheet, Text, Image, ScrollView, Alert, TouchableOpacity } from "react-native"
 import PlayButton from "../components/PlayButton"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
-import { useRoute } from "@react-navigation/native" 
+import { useFocusEffect, useRoute } from "@react-navigation/native"
 import { LinearGradient } from "expo-linear-gradient"
 import type { Movie } from "../components/MovieRow"
-import React, { useState, useEffect, use } from "react"
+import React, { useState, useEffect, useRef, useCallback, } from "react"
 import { Video, ResizeMode } from 'expo-av'
 import { getTrailerUrl } from "../services/movieService"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-
+import LottieView from "lottie-react-native";
 
 export default function MovieDetailsScreen() {
 
@@ -18,6 +19,8 @@ export default function MovieDetailsScreen() {
     const { movie } = route.params as { movie: Movie }
     const [showVideo, setShowVideo] = useState(false) // Quando true, exibe o trailer
     const [trailer, setTrailer] = useState("")
+    const heart = useRef<LottieView>(null)
+    const { t } = useTranslation()
 
     const showTrailer = async () => {
         try {
@@ -26,7 +29,7 @@ export default function MovieDetailsScreen() {
             setTrailer(trailerUrl)
             setShowVideo(true)
         } catch (error) {
-            Alert.alert("Ops!", "Trailer não encontrado!")
+            Alert.alert("Ops!", t("trailerNotFound"))
         }
     }
 
@@ -45,55 +48,73 @@ export default function MovieDetailsScreen() {
         loadData()
     }, [])
 
+    useFocusEffect(
+        useCallback(() => {
+            heart.current?.reset
+        })
+    )
+
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
                 <View>
                     <Image source={{ uri: movie.poster }} style={{ width: "100%", height: 320 }} />
-                    <LinearGradient 
-                        colors={["transparent", "white"]} 
-                        style={styles.gradient} 
-                        start={{ x:0, y:0.5 }} 
-                        end={{ x:0, y:1 }}
+                    <LinearGradient
+                        colors={["transparent", "white"]}
+                        style={styles.gradient}
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 0, y: 1 }}
                     />
 
-                    { showVideo && (
+                    {showVideo && (
                         <Video
-                            source={ {uri: trailer} } // Origem do vídeo
-                            rate={ 1.0 } // Velocidade
-                            volume={ 1.0 } // Volume
+                            source={{ uri: trailer }} // Origem do vídeo
+                            rate={1.0} // Velocidade
+                            volume={1.0} // Volume
                             resizeMode={ResizeMode.CONTAIN}
                             shouldPlay
                             useNativeControls
-                            style={ [styles.gradient, { backgroundColor: 'black' }] }
+                            style={[styles.gradient, { backgroundColor: 'black' }]}
                         />
                     )}
                 </View>
                 <View style={styles.content}>
                     <Text style={{ fontSize: 32, fontWeight: "bold", marginVertical: 12 }}>
-                        { movie.title }
+                        {movie.title}
                     </Text>
 
                     <View style={{ flexDirection: "row", marginBottom: 12 }}>
+                        <View style={{ position: 'absolute', top: -25, right: -30 }}>
+                            <TouchableOpacity onPress={() => heart.current?.play() }>
+                                <LottieView 
+                                    ref={heart} 
+                                    source={require("../animations/Heart.json")} 
+                                    autoPlay={false} 
+                                    loop={false} 
+                                    style={styles.heart} 
+                                />
+                            </TouchableOpacity>
+                        </View>
                         <AntDesign name="star" size={20} color="#F7CB46" />
-                        <Text style={[styles.text, { marginBottom: 12 }]}>{ movie.rating }/10</Text>
+                        <Text style={[styles.text, { marginBottom: 12 }]}>{movie.rating}/10</Text>
                     </View>
-
-                    <Text style={[styles.text, { marginBottom: 12 }]}>{ movie.categories }</Text>
-
-                    <PlayButton onPress={() => showTrailer()} />
-
-                    <ScrollView style={styles.synopsisContainer} contentContainerStyle={styles.synopsisContent}>
-                        <Text style={[styles.text, { marginBottom: 12, fontSize: 18, fontWeight: "600" }]}>
-                            Sinopse
-                        </Text>
-                        <Text style={[styles.text, { marginBottom: 24 }]}>
-                            { movie.synopsis }
-                        </Text>
-                    </ScrollView>
                 </View>
-            </SafeAreaView>
-        </SafeAreaProvider>
+
+                <Text style={[styles.text, { marginBottom: 12 }]}>{movie.categories}</Text>
+
+                <PlayButton onPress={() => showTrailer()} />
+
+                <ScrollView style={styles.synopsisContainer} contentContainerStyle={styles.synopsisContent}>
+                    <Text style={[styles.text, { marginBottom: 12, fontSize: 18, fontWeight: "600" }]}>
+                        {t("synopsis")}
+                    </Text>
+                    <Text style={[styles.text, { marginBottom: 24 }]}>
+                        {movie.synopsis}
+                    </Text>
+                </ScrollView>
+            </View>
+        </SafeAreaView>
+        </SafeAreaProvider >
     )
 }
 
@@ -127,4 +148,8 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    heart: {
+        width: 80,
+        height: 80
+    }
 })

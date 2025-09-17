@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { useState, useEffect, useContext } from "react";
@@ -54,14 +56,16 @@ export default function SettingsScreen() {
     }
   }, [category]);
 
+  const { t } = useTranslation()
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Ajustes</Text>
-        <Text style={styles.sectionTitle}>TEMA</Text>
+        <Text style={styles.title}>{t("settings")}</Text>
+        <Text style={styles.sectionTitle}>{t("theme").toUpperCase()}</Text>
         <SegmentedControl
           style={{ marginBottom: 32 }}
-          values={["Vermelho", "Azul", "Laranja"]}
+          values={[t("red"), t("blue"), t("orange")]}
           selectedIndex={Number(theme)}
           onChange={(event) => {
             setTheme(event.nativeEvent.selectedSegmentIndex);
@@ -69,7 +73,7 @@ export default function SettingsScreen() {
         />
         <View style={styles.autoPlaySelection}>
           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>
-            AUTOPLAY
+            {t("autoPlay").toUpperCase()}
           </Text>
           <Switch
             value={autoPlay}
@@ -79,12 +83,12 @@ export default function SettingsScreen() {
             ios_backgroundColor={"#bbb"}
           />
         </View>
-        <Text style={styles.sectionTitle}>CATEGORIA FAVORITA</Text>
+        <Text style={styles.sectionTitle}>{t("favoriteCategory").toUpperCase()}</Text>
         <TextInput
           style={styles.input}
           value={category}
           onChangeText={setCategory}
-          placeholder="Entre com sua categoria favorita"
+          placeholder={t("favoriteCategoryPlaceholder")}
         />
       </SafeAreaView>
     </SafeAreaProvider>

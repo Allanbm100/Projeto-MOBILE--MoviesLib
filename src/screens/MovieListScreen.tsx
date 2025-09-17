@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Pressable } from "react-native"
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
@@ -17,6 +19,7 @@ export default function MovieListScreen() {
     const queryClient = useQueryClient();
     const [category, setCategory] = useState("");
     const { value } = React.useContext(AppContext);
+    const { t } = useTranslation()
 
     const { data: movies, isLoading, isError, refetch, isFetching } = useQuery({
         queryKey: ['movies'],
@@ -52,16 +55,16 @@ export default function MovieListScreen() {
         <View style={styles.rowBack}>
             <TouchableOpacity style={styles.backRightBtn}
                 onPress={() => {
-                    Alert.alert('Confirmar exclusão', 'Tem certeza que deseja excluir este item?',
+                    Alert.alert(t("deleteConfirm"), t("sureDeleteConfirm"),
                         [
-                            { text: 'Cancelar', style: 'cancel' },
-                            { text: 'Excluir', style: 'destructive', onPress: () => deleteRow(data.item.id) },
+                            { text: t("cancel"), style: 'cancel' },
+                            { text: t("delete"), style: 'destructive', onPress: () => deleteRow(data.item.id) },
                         ],
                         { cancelable: true }
                     )
                 }}
             >
-                <Text style={styles.backTextWhite}>Excluir</Text>
+                <Text style={styles.backTextWhite}>{t("delete")}</Text>
             </TouchableOpacity>
         </View>
     }
@@ -72,7 +75,7 @@ export default function MovieListScreen() {
             queryClient.invalidateQueries({ queryKey: ["movies"] });
 
         } catch (error) {
-            Alert.alert("Erro", "Não foi possível excluir o filme")
+            Alert.alert(t("erro"), t("notPossibleDelete"))
         }
     };
 
@@ -87,16 +90,16 @@ export default function MovieListScreen() {
     if (isError) {
         return (
             <View style={styles.center}>
-                <Text>Erro ao carregar os filmes</Text>
+                <Text>{t("errorLoadMovie")}</Text>
             </View>
         )
     }
-
+    
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text style={styles.title}>Filmes</Text>
+                    <Text style={styles.title}>{t("movies")}</Text>
                     <TouchableOpacity onPress={() => navigation.navigate("MovieFormScreen")}>
                         <Text style={{ color: APP_COLORS[Number(value)], fontSize: 32, fontWeight: "black", marginRight: 10 }}>+</Text>
                     </TouchableOpacity>

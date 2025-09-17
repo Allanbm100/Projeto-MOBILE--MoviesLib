@@ -1,3 +1,7 @@
+import "./src/i18n"
+
+import { useTranslation } from "react-i18next";
+
 import { Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -35,6 +39,8 @@ export default function App() {
     setValueState(val)
   }
 
+  const { t } = useTranslation()
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppContext.Provider value={{ value, setValue: setValueState }}>
@@ -54,7 +60,7 @@ export default function App() {
                     navigation.setParams({ movie: updatedMovie })
                   }
                 })}>
-                  <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>Editar</Text>
+                  <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>{t("edit")}</Text>
                 </TouchableOpacity>
               ),
             })} />
@@ -62,7 +68,7 @@ export default function App() {
               headerBackButtonDisplayMode: 'minimal',
               headerRight: () => (
                 <TouchableOpacity onPress={() => navigation.popToTop()}>
-                  <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>Voltar ao início</Text>
+                  <Text style={{ color: APP_COLORS[Number(value)], fontSize: 18 }}>{t("backToHome")}</Text>
                 </TouchableOpacity>
               ),
             })} />
